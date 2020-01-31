@@ -19,12 +19,19 @@ public class SelectionManager : MonoBehaviour
             if (currentHover != null && currentHover != hoverObject)
             {
                 currentHover.OnEndHover();
-                currentHover = hoverObject;
-                if (currentHover != null)
-                {
-                    currentHover.OnBeginHover();
-                }
             }
+
+            currentHover = hoverObject;
+
+            if (currentHover != null)
+            {
+                currentHover.OnBeginHover();
+            }
+        }
+        else if (currentHover != null)
+        {
+            currentHover.OnEndHover();
+            currentHover = null;
         }
     }
 }
