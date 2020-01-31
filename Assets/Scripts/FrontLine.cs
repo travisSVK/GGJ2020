@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class Frontline : MonoBehaviour, ISelectable
 {
-    private List<Pawn> m_pawns = new List<Pawn>();
     [SerializeField] private SpriteRenderer m_inactive = null;
     [SerializeField] private SpriteRenderer m_active = null;
+    private Transform m_baseTile;
+    private Transform m_enemyTile;
+    private List<Pawn> m_pawns = new List<Pawn>();
 
+    private void Awake()
+    {
+        m_inactive.enabled = true;
+        m_active.enabled = false;
+    }
 
     public void OnBeginHover()
     {
@@ -35,9 +42,9 @@ public class Frontline : MonoBehaviour, ISelectable
         m_pawns.Add(pawn);
     }
 
-    private void Awake()
+    public void SetTiles(Transform baseTile, Transform enemyTile)
     {
-        m_inactive.enabled = true;
-        m_active.enabled = false;
+        m_baseTile = baseTile;
+        m_enemyTile = enemyTile;
     }
 }

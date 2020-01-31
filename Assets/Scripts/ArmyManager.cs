@@ -5,7 +5,7 @@ using UnityEngine;
 public class ArmyManager : MonoBehaviour
 {
     [SerializeField] private int m_armySize;
-    [SerializeField] private Transform[] m_frontLinePositions;
+    [SerializeField] private FrontlineEntry[] m_frontLinePositions;
     [SerializeField] private ObjectPool m_pawnObjecPool;
     [SerializeField] private ObjectPool m_frontLineObjectPool;
 
@@ -28,7 +28,7 @@ public class ArmyManager : MonoBehaviour
         int frontLineIndex = 0;
         int frontLineSize = m_armySize / m_frontLinePositions.Length;
 
-        foreach (Transform transform in m_frontLinePositions)
+        foreach (FrontlineEntry frontlineEntry in m_frontLinePositions)
         {
             GameObject obj = m_frontLineObjectPool.GetPooledObject();
             if (obj)
@@ -40,6 +40,7 @@ public class ArmyManager : MonoBehaviour
                     {
                         Pawn pawn = pawns[i].GetComponent<Pawn>();
                         frontLine.AddPawn(pawn);
+                        frontLine.SetTiles(frontlineEntry.m_baseTile, frontlineEntry.m_enemyTile);
                     }
                 }
                 frontLineIndex += frontLineSize;
