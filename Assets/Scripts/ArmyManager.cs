@@ -9,7 +9,7 @@ public class ArmyManager : MonoBehaviour
     [SerializeField] private ObjectPool m_pawnObjecPool;
     [SerializeField] private ObjectPool m_frontLineObjectPool;
 
-    private List<FrontLine> m_frontLines = new List<FrontLine>();
+    private List<Frontline> m_frontLines = new List<Frontline>();
     
 
     private void Start()
@@ -33,7 +33,7 @@ public class ArmyManager : MonoBehaviour
             GameObject obj = m_frontLineObjectPool.GetPooledObject();
             if (obj)
             {
-                FrontLine frontLine = obj.GetComponent<FrontLine>();
+                Frontline frontLine = obj.GetComponent<Frontline>();
                 for (int i = frontLineIndex; i < frontLineIndex + frontLineSize; i++)
                 {
                     if ((i <= pawns.Count) && (pawns[i]))
