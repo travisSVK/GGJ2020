@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Pawn : MonoBehaviour
 {
+    public int armyId = 0;
+
     private void Start()
     {
 
