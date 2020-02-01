@@ -11,6 +11,7 @@ public class GameBoard : MonoBehaviour
 
     [SerializeField] private int m_width = 48;
     [SerializeField] private int m_height = 32;
+    [SerializeField] private static int m_tileResolution = 5;
 
     [SerializeField] private GameObject m_pawnPrefab = null;
 
@@ -51,6 +52,11 @@ public class GameBoard : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static float GetUnitDistance()
+    {
+        return 1.0f / m_tileResolution;
     }
 
     private void Awake()
