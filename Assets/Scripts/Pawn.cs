@@ -5,6 +5,11 @@ using UnityEngine;
 public class Pawn : MonoBehaviour
 {
     public int armyId = 0;
+    public int m_tilePositionX;
+    public int m_tilePositionY;
+    public int m_subTilePositionX;
+    public int m_subTilePositionY;
+
     private bool m_isInCombat = false;
     private bool m_hasWonCombat = false;
 
@@ -12,7 +17,16 @@ public class Pawn : MonoBehaviour
     private float m_dmg;
     private float m_shieldHp;
     private float m_swordHp;
+    
     private float m_initiative;
+
+    private KillCallback m_killCallback = null;
+    public delegate void KillCallback(GameObject obj);
+
+    public void SetKillCallback(KillCallback callback)
+    {
+        m_killCallback = callback;
+    }
 
     public float initiative
     {
@@ -31,18 +45,23 @@ public class Pawn : MonoBehaviour
         set { m_hasWonCombat = value; }
     }
 
-    public void Attack(Pawn pawn)
+    public bool Attack(Pawn pawn)
     {
-        pawn.TakeDmg(m_dmg);
+        bool pawnDied = pawn.TakeDmg(m_dmg);
         m_swordHp -= m_dmg;
         if (m_swordHp <= 0.0f)
         {
             m_swordHp = 0.0f;
             // TODO go repair the sword
         }
+        if (pawnDied)
+        {
+            m_hasWonCombat = true;
+        }
+        return pawnDied;
     }
 
-    public void TakeDmg(float dmg)
+    public bool TakeDmg(float dmg)
     {
         m_shieldHp -= dmg;
         if (m_shieldHp < 0.0f)
@@ -51,14 +70,17 @@ public class Pawn : MonoBehaviour
             m_shieldHp = 0.0f;
             if (m_hp <= 0.0f)
             {
-                gameObject.SetActive(false);
-                return;
+                m_isInCombat = false;
+                m_killCallback?.Invoke(gameObject);
+                return true;
             }
             // TODO go repair the shield
+            //return true;
         }
+        return false;
     }
 
-    public void SpawnPawn()
+    public void SpawnPawn(int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
     {
         m_hp = Random.Range(3.0f, 5.0f);
         m_dmg = Random.Range(3.0f, 5.0f);

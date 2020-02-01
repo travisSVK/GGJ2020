@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private GameObject m_combatPrefab = null;
+    
     [SerializeField] private float m_speed = 0.2f;
-    private ObjectPool m_combatPool = null;
+    private GameBoard m_gameBoard;
 
     public int armyOwnerId = 0;
     public Tile up = null;
@@ -14,24 +14,6 @@ public class Tile : MonoBehaviour
     public Tile left = null;
     public Tile right = null;
     public Pawn[, ] m_pawns;
-    
-    public List<Pawn> GetEnemyPawns(int id)
-    {
-        List<Pawn> enemyPawns = new List<Pawn>();
-        for (int i = 0, k = 0; i < m_pawns.GetLength(0); ++i)
-        {
-            for (int j = 0; j < m_pawns.GetLength(1); ++j, k++)
-            {
-                Pawn pawn = m_pawns[i, j];
-                if (pawn != null && pawn.armyId != id)
-                {
-                    enemyPawns.Add(pawn);
-                }
-            }
-        }
-
-        return enemyPawns;
-    }
 
     float GetDistanceToEnemy(Pawn pawn, Vector3 pawnDirection, Pawn enemyPawn)
     {
@@ -66,10 +48,14 @@ public class Tile : MonoBehaviour
     private Pawn GetPawnInFrontOf(Pawn pawn, Vector3 direction, Pawn[,] pawnsToCheck)
     {
         Pawn inFrontOfPawn = null;
-        float unitDistance = GameBoard.GetUnitDistance();
+        float unitDistance = m_gameBoard.GetUnitDistance();
 
         foreach (Pawn anotherPawn in pawnsToCheck)
         {
+            if (!anotherPawn || (pawn == anotherPawn))
+            {
+                continue;
+            }
             float distanceToPawn = 0.0f;
             if (direction.x != 0)
             {
@@ -78,7 +64,6 @@ public class Tile : MonoBehaviour
             else
             {
                 distanceToPawn = Mathf.Abs(anotherPawn.transform.position.x - pawn.transform.position.x);
-
             }
             if (unitDistance >= distanceToPawn)
             {
@@ -114,67 +99,78 @@ public class Tile : MonoBehaviour
 
     private void Update()
     {
-        float unitDistance = GameBoard.GetUnitDistance();
+        if (!m_gameBoard)
+        {
+            m_gameBoard = GetComponentInParent(typeof(GameBoard)) as GameBoard;
+        }
+        float unitDistance = m_gameBoard.GetUnitDistance();
 
         foreach (Pawn pawn in m_pawns)
         {
-            // check pawn in front in current tile or the tile in the direction of attack/move
-            Vector3 direction = GetPawnDirection(pawn);
+            if (pawn)
+            {
+                // check pawn in front in current tile or the tile in the direction of attack/move
+                Vector3 direction = GetPawnDirection(pawn);
 
-            // if not in combat, check if any enemy pawn is standing infront
-            if (!pawn.isInCombat)
-            {
-                Pawn inFrontOfPawn = GetPawnInFrontOf(pawn, direction, m_pawns);
-                if (!inFrontOfPawn)
-                {
-                    // try to get from the next tile in that direction
-                    Tile tile = GetTileInDirection(direction);
-                    inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
-                }
-                // check if its enemy or not
-                if (inFrontOfPawn)
-                {
-                    if (inFrontOfPawn.armyId == pawn.armyId)
-                    {
-                        // nothing to do
-                        continue;
-                    }
-                    float distanceToEnemy = GetDistanceToEnemy(pawn, direction, inFrontOfPawn);
-                    if (unitDistance >= distanceToEnemy)
-                    {
-                        // create combat instance
-                        GameObject gameObject = m_combatPool.GetPooledObject();
-                        CombatInstance combatInstance = gameObject.GetComponent(typeof(CombatInstance)) as CombatInstance;
-                        combatInstance.SetCombat(pawn, inFrontOfPawn);
-                        continue;
-                    }
-                }
-                // if not any enemy, advance forward, but only if the combat was won recently
-                if (!gameObject && pawn.hasWonCombat)
-                {
-                    pawn.transform.position += direction * unitDistance * m_speed;
-                }
-            }
-            else
-            {
-                // still in combat, lets check if already won
-                if (pawn.hasWonCombat)
+                // if not in combat, check if any enemy pawn is standing infront
+                if (!pawn.isInCombat)
                 {
                     Pawn inFrontOfPawn = GetPawnInFrontOf(pawn, direction, m_pawns);
                     if (!inFrontOfPawn)
                     {
                         // try to get from the next tile in that direction
                         Tile tile = GetTileInDirection(direction);
-                        inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
+                        if (tile)
+                        {
+                            inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
+                        }
                     }
+                    // check if its enemy or not
                     if (inFrontOfPawn)
                     {
-                        pawn.hasWonCombat = false;
-                        pawn.isInCombat = false;
+                        if (inFrontOfPawn.armyId == pawn.armyId)
+                        {
+                            // nothing to do
+                            continue;
+                        }
+                        float distanceToEnemy = GetDistanceToEnemy(pawn, direction, inFrontOfPawn);
+                        if (unitDistance >= distanceToEnemy)
+                        {
+                            // create combat instance
+                            GameObject gameObject = m_gameBoard.GetCombat();
+                            CombatInstance combatInstance = gameObject.GetComponent(typeof(CombatInstance)) as CombatInstance;
+                            combatInstance.SetCombat(pawn, inFrontOfPawn);
+                            combatInstance.SetKillCallback(m_gameBoard.KillCombat);
+                            continue;
+                        }
                     }
-                    else
+                    // if not any enemy, advance forward, but only if the combat was won recently
+                    if (!gameObject && pawn.hasWonCombat)
                     {
                         pawn.transform.position += direction * unitDistance * m_speed;
+                    }
+                }
+                else
+                {
+                    // still in combat, lets check if already won
+                    if (pawn.hasWonCombat)
+                    {
+                        Pawn inFrontOfPawn = GetPawnInFrontOf(pawn, direction, m_pawns);
+                        if (!inFrontOfPawn)
+                        {
+                            // try to get from the next tile in that direction
+                            Tile tile = GetTileInDirection(direction);
+                            inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
+                        }
+                        if (inFrontOfPawn)
+                        {
+                            pawn.hasWonCombat = false;
+                            pawn.isInCombat = false;
+                        }
+                        else
+                        {
+                            pawn.transform.position += direction * unitDistance * m_speed;
+                        }
                     }
                 }
             }
@@ -184,8 +180,5 @@ public class Tile : MonoBehaviour
     private void Awake()
     {
         m_pawns = new Pawn[5, 5];
-        GameObject pawnPoolObj = new GameObject("CombatPool");
-        m_combatPool = pawnPoolObj.AddComponent<ObjectPool>();
-        m_combatPool.Initialize(10000, "CombatInstance", m_combatPrefab);
     }
 }

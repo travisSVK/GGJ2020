@@ -8,6 +8,13 @@ public class CombatInstance : MonoBehaviour
     private float m_currentCooldown = 0.0f;
     private Pawn m_pawn1;
     private Pawn m_pawn2;
+    private KillCallback m_killCallback = null;
+    public delegate void KillCallback(GameObject obj);
+
+    public void SetKillCallback(KillCallback callback)
+    {
+        m_killCallback = callback;
+    }
 
     public void SetCombat(Pawn pawn1, Pawn pawn2)
     {
@@ -27,13 +34,14 @@ public class CombatInstance : MonoBehaviour
         }
         else
         {
+            bool finished = false;
             if (m_pawn1.initiative > m_pawn2.initiative)
             {
-                m_pawn1.Attack(m_pawn2);
+                finished = m_pawn1.Attack(m_pawn2);
             }
             else if (m_pawn1.initiative > m_pawn2.initiative)
             {
-                m_pawn1.Attack(m_pawn2);
+                finished = m_pawn1.Attack(m_pawn2);
             }
             else
             {
@@ -41,12 +49,16 @@ public class CombatInstance : MonoBehaviour
                 int roll = Random.Range(0, 1);
                 if (roll == 0)
                 {
-                    m_pawn1.Attack(m_pawn2);
+                    finished = m_pawn1.Attack(m_pawn2);
                 }
                 else
                 {
-                    m_pawn2.Attack(m_pawn1);
+                    finished = m_pawn2.Attack(m_pawn1);
                 }
+            }
+            if (finished)
+            {
+                m_killCallback?.Invoke(gameObject);
             }
         }
     }

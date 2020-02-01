@@ -11,21 +11,18 @@ public class GameBoard : MonoBehaviour
 
     [SerializeField] private int m_width = 48;
     [SerializeField] private int m_height = 32;
-    [SerializeField] private static int m_tileResolution = 5;
+    [SerializeField] private int m_tileResolution = 5;
 
     [SerializeField] private GameObject m_pawnPrefab = null;
-    [SerializeField] private GameObject m_tilePrefab = null;
+    [SerializeField] private GameObject m_combatPrefab = null;
 
     private ObjectPool m_playerPool = null;
     private ObjectPool m_enemyPool = null;
+    private ObjectPool m_combatPool = null;
 
     private Tile[,] m_tiles = null;
     private List<FrontlineObject> m_frontlines;
-
-    public List<Pawn> GetEnemyPawnsOfTile(Vector2Int position, int id)
-    {
-        return m_tiles[position.x, position.y].GetEnemyPawns(id);
-    }
+    
 
     public void GenereateFrontline()
     {
@@ -55,9 +52,29 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public static float GetUnitDistance()
+    public float GetUnitDistance()
     {
         return 1.0f / m_tileResolution;
+    }
+
+    public GameObject GetCombat()
+    {
+        GameObject combat = m_combatPool.GetPooledObject();
+        CombatInstance ci = combat.GetComponent(typeof(CombatInstance)) as CombatInstance;
+        ci.SetKillCallback(m_combatPool.Kill);
+        return m_combatPool.GetPooledObject();
+    }
+
+    public void KillSpawn(GameObject go)
+    {
+        Pawn pawn = go.GetComponent<Pawn>();
+        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionX] = null;
+        m_playerPool.Kill(go);
+    }
+
+    public void KillCombat(GameObject go)
+    {
+        m_combatPool.Kill(go);
     }
 
     private void Awake()
@@ -70,6 +87,10 @@ public class GameBoard : MonoBehaviour
         m_enemyPool = enemyPoolObj.AddComponent<ObjectPool>();
         m_enemyPool.Initialize(10000, "EnemyUnit", m_pawnPrefab);
 
+        GameObject combatPoolObj = new GameObject("CombatPool");
+        m_combatPool = combatPoolObj.AddComponent<ObjectPool>();
+        m_combatPool.Initialize(10, "CombatInstance", m_combatPrefab);
+
         m_frontlines = new List<FrontlineObject>();
         m_tiles = new Tile[m_width, m_height];
 
@@ -80,11 +101,11 @@ public class GameBoard : MonoBehaviour
         {
             for (int x = 0; x < m_width; ++x)
             {
-                GameObject obj = Instantiate(m_tilePrefab);
+                GameObject obj = new GameObject();
                 obj.transform.parent = transform;
                 obj.transform.position = new Vector3(x - halfWidth, y - halfHeight, 0.0f);
 
-                Tile tile = obj.GetComponent<Tile>();
+                Tile tile = obj.AddComponent<Tile>();
 
                 if (y > (int)halfHeight)
                 {
@@ -152,7 +173,10 @@ public class GameBoard : MonoBehaviour
                         {
                             Vector3 offset = m_tiles[x, y].transform.position;
                             pawn.transform.position = new Vector3(offset.x - 0.4f + (xi * 0.2f), offset.y - 0.5f + (yi * 0.2f), 0.0f);
-                            m_tiles[x, y].m_pawns[xi, yi] = pawn.GetComponent<Pawn>();
+                            Pawn pawnComponent = pawn.GetComponent<Pawn>();
+                            pawnComponent.SetKillCallback(KillSpawn);
+                            pawnComponent.SpawnPawn(x, y, xi, yi);
+                            m_tiles[x, y].m_pawns[xi, yi] = pawnComponent;
                         }
                     }
                 }
