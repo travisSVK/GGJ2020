@@ -1,28 +1,28 @@
 fileFormatVersion: 2
-guid: 72405b1e25cb06e44aeba6127f1695bd
+guid: b52abb536071a3a4c8f73a3a4dc9fd68
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3287036126781237920
-    second: TerrainSpritesheet_0
+      213: -615613702177312148
+    second: Forge_Idle_01
   - first:
-      213: 4040275573016921767
-    second: TerrainSpritesheet_1
+      213: 3680488986287749217
+    second: Forge_Idle_02
   - first:
-      213: -4811296450826331019
-    second: TerrainSpritesheet_2
+      213: -2083129944836519222
+    second: Hospital_Idle_01
   - first:
-      213: 5042838717553256569
-    second: TerrainSpritesheet_3
+      213: 8697060415904301986
+    second: Hospital_Idle_02
   - first:
-      213: 319795442475716299
-    second: TerrainSpritesheet_4
+      213: 8841991358190994986
+    second: Shower_Idle_01
   - first:
-      213: 9209924612992337707
-    second: TerrainSpritesheet_5
+      213: 304508448163925585
+    second: Shower_Idle_02
   - first:
-      213: 8679686788476243646
-    second: TerrainSpritesheet_6
+      213: 4721440197422714416
+    second: Shower_Idle_03
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -143,7 +143,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TerrainSpritesheet_0
+      name: Forge_Idle_01
       rect:
         serializedVersion: 2
         x: 0
@@ -151,20 +151,20 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0651453ee0a1262d0800000000000000
-      internalID: -3287036126781237920
+      spriteID: c62bbda7996e477f0800000000000000
+      internalID: -615613702177312148
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TerrainSpritesheet_1
+      name: Forge_Idle_02
       rect:
         serializedVersion: 2
         x: 16
@@ -172,20 +172,20 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7a68c543a31f11830800000000000000
-      internalID: 4040275573016921767
+      spriteID: 1683b63ab39b31330800000000000000
+      internalID: 3680488986287749217
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TerrainSpritesheet_2
+      name: Hospital_Idle_01
       rect:
         serializedVersion: 2
         x: 32
@@ -193,20 +193,20 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 57c166b8e57da3db0800000000000000
-      internalID: -4811296450826331019
+      spriteID: aca4a012a5c3713e0800000000000000
+      internalID: -2083129944836519222
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TerrainSpritesheet_3
+      name: Hospital_Idle_02
       rect:
         serializedVersion: 2
         x: 0
@@ -214,20 +214,20 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 97829537813cbf540800000000000000
-      internalID: 5042838717553256569
+      spriteID: 2a346188e5a22b870800000000000000
+      internalID: 8697060415904301986
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TerrainSpritesheet_4
+      name: Shower_Idle_01
       rect:
         serializedVersion: 2
         x: 16
@@ -235,20 +235,20 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bcecd85b244207400800000000000000
-      internalID: 319795442475716299
+      spriteID: a264c0c1b4015ba70800000000000000
+      internalID: 8841991358190994986
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TerrainSpritesheet_5
+      name: Shower_Idle_02
       rect:
         serializedVersion: 2
         x: 32
@@ -256,20 +256,20 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b270985a3a930df70800000000000000
-      internalID: 9209924612992337707
+      spriteID: 15e8aebf1d4d93400800000000000000
+      internalID: 304508448163925585
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TerrainSpritesheet_6
+      name: Shower_Idle_03
       rect:
         serializedVersion: 2
         x: 0
@@ -277,14 +277,14 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ebe07cca521747870800000000000000
-      internalID: 8679686788476243646
+      spriteID: 03e81a328dce58140800000000000000
+      internalID: 4721440197422714416
       vertices: []
       indices: 
       edges: []
