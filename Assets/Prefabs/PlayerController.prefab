@@ -43,7 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d62fdd804bfcd444a8c9cc3491b5ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_forge: {fileID: 6943626490619119031, guid: 17719ee61ec52964b87927f9b836cdd6, type: 3}
+  m_forgePrefab: {fileID: 6943626490619119031, guid: 17719ee61ec52964b87927f9b836cdd6,
+    type: 3}
+  m_tmpForgePrefab: {fileID: 2086020541631701554, guid: 44bc8601ff1ccaf48ba1ba7709caed8f,
+    type: 3}
 --- !u!1 &3540637852692169201
 GameObject:
   m_ObjectHideFlags: 0

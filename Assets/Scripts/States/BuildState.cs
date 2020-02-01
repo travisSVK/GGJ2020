@@ -10,7 +10,8 @@ public class BuildState : MonoBehaviour
         FORGE
     }
 
-    [SerializeField] private GameObject m_forge;
+    [SerializeField] private GameObject m_forgePrefab;
+    [SerializeField] private GameObject m_tmpForgePrefab;
 
     private GameObject m_tmpBuilding = null;
 
@@ -34,6 +35,19 @@ public class BuildState : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                switch (m_buildMode)
+                {
+                    case BuildModes.NONE:
+                        break;
+                    case BuildModes.FORGE:
+                        GameObject forge = Instantiate(m_forgePrefab);
+                        forge.name = "Forge";
+                        forge.transform.position = m_tmpBuilding.transform.position;
+                        break;
+                    default:
+                        break;
+                }
+
                 m_buildMode = BuildModes.NONE;
                 m_tmpBuilding = null;
             }
@@ -51,15 +65,16 @@ public class BuildState : MonoBehaviour
 
     private void EnterForgeMode()
     {
-        m_tmpBuilding = Instantiate(m_forge);
         if (m_buildMode == BuildModes.FORGE)
         {
             m_buildMode = BuildModes.NONE;
             Destroy(m_tmpBuilding);
+            m_tmpBuilding = null;
         }
         else
         {
             m_buildMode = BuildModes.FORGE;
+            m_tmpBuilding = Instantiate(m_tmpForgePrefab);
         }
     }
 }
