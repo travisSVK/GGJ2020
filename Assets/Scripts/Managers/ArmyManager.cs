@@ -94,6 +94,8 @@ public class ArmyManager : MonoBehaviour
 
     private void UpdateRepairOrders()
     {
+        Debug.Log(m_repairOrders.Count);
+
         for (int i = 0; i < m_repairOrders.Count; ++i)
         {
             Pawn pawn = m_repairOrders[i].pawn;
@@ -101,7 +103,7 @@ public class ArmyManager : MonoBehaviour
             if (m_repairOrders[i].movementProgress < 1.0f)
             {
                 // Move.
-                m_repairOrders[i].movementProgress += (m_repairOrders[i].distance / Time.deltaTime) * 0.5f;
+                m_repairOrders[i].movementProgress += (m_repairOrders[i].distance / Time.deltaTime) * 0.05f;
                 pawn.transform.position = Vector3.Lerp(m_repairOrders[i].startPosition,
                     m_repairOrders[i].forge.transform.position,
                     Mathf.Min(1.0f, m_repairOrders[i].movementProgress));

@@ -52,6 +52,7 @@ public class BuildState : MonoBehaviour
                 }
 
                 m_buildMode = BuildModes.NONE;
+                Destroy(m_tmpBuilding);
                 m_tmpBuilding = null;
             }
             else if (Input.GetMouseButtonDown(1))

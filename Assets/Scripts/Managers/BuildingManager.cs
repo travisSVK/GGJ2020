@@ -26,17 +26,17 @@ public class BuildingManager : MonoBehaviour
             }
         }
 
-        return null;
+        return forge;
     }
 
     public void DeregisterForgeBuilding(ForgeBuilding forgeBuilding)
     {
-        m_forgeBuildings.Add(forgeBuilding);
+        m_forgeBuildings.Remove(forgeBuilding);
     }
 
     public void RegisterForgeBuilding(ForgeBuilding forgeBuilding)
     {
-        m_forgeBuildings.Remove(forgeBuilding);
+        m_forgeBuildings.Add(forgeBuilding);
     }
 
     private void Awake()

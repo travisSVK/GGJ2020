@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    
     [SerializeField] private float m_speed = 0.05f;
     private GameBoard m_gameBoard;
 
@@ -195,9 +194,9 @@ public class Tile : MonoBehaviour
                 {
                     return true;
                 }
-                if (!m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionX].m_pawns[positionX - (m_gameBoard.tileResolution - 1), pawn.m_subTilePositionY])
+                if (!m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[positionX - (m_gameBoard.tileResolution - 1), pawn.m_subTilePositionY])
                 {
-                    m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionX].m_pawns[positionX - (m_gameBoard.tileResolution - 1), pawn.m_subTilePositionY] = pawn;
+                    m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[positionX - (m_gameBoard.tileResolution - 1), pawn.m_subTilePositionY] = pawn;
                     return false;
                 }
                 return true;
