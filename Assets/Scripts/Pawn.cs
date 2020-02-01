@@ -75,18 +75,32 @@ public class Pawn : MonoBehaviour
                 return true;
             }
             // TODO go repair the shield
-            //return true;
+            ArmyManager armyManager = FindObjectOfType<ArmyManager>();
+            if (armyManager)
+            {
+                bool isForgeAvailable = armyManager.AskForRepair(this);
+                if (isForgeAvailable)
+                {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
-    public void SpawnPawn(int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
+    public void SpawnPawn(int armyIdSet, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
     {
+        armyId = armyIdSet;
         m_hp = Random.Range(3.0f, 5.0f);
         m_dmg = Random.Range(3.0f, 5.0f);
         m_shieldHp = Random.Range(3.0f, 5.0f);
         m_swordHp = Random.Range(5.0f, 7.0f);
         m_initiative = Random.Range(1.0f, 5.0f);
+
+        m_tilePositionX = tilePositionX;
+        m_tilePositionY = tilePositionY;
+        m_subTilePositionX = subTilePositionX;
+        m_subTilePositionY = subTilePositionY;
     }
 
     private void Start()

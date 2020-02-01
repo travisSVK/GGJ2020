@@ -57,12 +57,40 @@ public class Tile : MonoBehaviour
                 continue;
             }
             float distanceToPawn = 0.0f;
-            if (direction.x != 0)
+            if (direction.y != 0)
             {
+                if (anotherPawn.transform.position.x != pawn.transform.position.x)
+                {
+                    continue;
+                }
+                if ((anotherPawn.transform.position.y - pawn.transform.position.y) < 0.0f
+                    && (direction.y > 0.0f))
+                {
+                    continue;
+                }
+                if ((anotherPawn.transform.position.y - pawn.transform.position.y) > 0.0f
+                    && (direction.y < 0.0f))
+                {
+                    continue;
+                }
                 distanceToPawn = Mathf.Abs(anotherPawn.transform.position.y - pawn.transform.position.y);
             }
             else
             {
+                if (anotherPawn.transform.position.y != pawn.transform.position.y)
+                {
+                    continue;
+                }
+                if ((anotherPawn.transform.position.x - pawn.transform.position.x) < 0.0f
+                    && (direction.x < 0.0f))
+                {
+                    continue;
+                }
+                if ((anotherPawn.transform.position.x - pawn.transform.position.x) > 0.0f
+                    && (direction.x < 0.0f))
+                {
+                    continue;
+                }
                 distanceToPawn = Mathf.Abs(anotherPawn.transform.position.x - pawn.transform.position.x);
             }
             if (unitDistance >= distanceToPawn)
@@ -140,7 +168,6 @@ public class Tile : MonoBehaviour
                             GameObject gameObject = m_gameBoard.GetCombat();
                             CombatInstance combatInstance = gameObject.GetComponent(typeof(CombatInstance)) as CombatInstance;
                             combatInstance.SetCombat(pawn, inFrontOfPawn);
-                            combatInstance.SetKillCallback(m_gameBoard.KillCombat);
                             continue;
                         }
                     }

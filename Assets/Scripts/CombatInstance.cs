@@ -34,6 +34,7 @@ public class CombatInstance : MonoBehaviour
         }
         else
         {
+            m_currentCooldown = 0.0f;
             bool finished = false;
             if (m_pawn1.initiative > m_pawn2.initiative)
             {

@@ -62,19 +62,19 @@ public class GameBoard : MonoBehaviour
         GameObject combat = m_combatPool.GetPooledObject();
         CombatInstance ci = combat.GetComponent(typeof(CombatInstance)) as CombatInstance;
         ci.SetKillCallback(m_combatPool.Kill);
-        return m_combatPool.GetPooledObject();
+        return combat;
     }
 
-    public void KillSpawn(GameObject go)
+    public void RemovePawnFromTile(Pawn pawn)
+    {
+        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionX] = null;
+    }
+
+    public void KillPawn(GameObject go)
     {
         Pawn pawn = go.GetComponent<Pawn>();
         m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionX] = null;
         m_playerPool.Kill(go);
-    }
-
-    public void KillCombat(GameObject go)
-    {
-        m_combatPool.Kill(go);
     }
 
     private void Awake()
@@ -89,7 +89,7 @@ public class GameBoard : MonoBehaviour
 
         GameObject combatPoolObj = new GameObject("CombatPool");
         m_combatPool = combatPoolObj.AddComponent<ObjectPool>();
-        m_combatPool.Initialize(10, "CombatInstance", m_combatPrefab);
+        m_combatPool.Initialize(10000, "CombatInstance", m_combatPrefab);
 
         m_frontlines = new List<FrontlineObject>();
         m_tiles = new Tile[m_width, m_height];
@@ -174,8 +174,8 @@ public class GameBoard : MonoBehaviour
                             Vector3 offset = m_tiles[x, y].transform.position;
                             pawn.transform.position = new Vector3(offset.x - 0.4f + (xi * 0.2f), offset.y - 0.5f + (yi * 0.2f), 0.0f);
                             Pawn pawnComponent = pawn.GetComponent<Pawn>();
-                            pawnComponent.SetKillCallback(KillSpawn);
-                            pawnComponent.SpawnPawn(x, y, xi, yi);
+                            pawnComponent.SetKillCallback(KillPawn);
+                            pawnComponent.SpawnPawn(PLAYER_ARMY_ID, x, y, xi, yi);
                             m_tiles[x, y].m_pawns[xi, yi] = pawnComponent;
                         }
                     }
@@ -205,7 +205,10 @@ public class GameBoard : MonoBehaviour
                         {
                             Vector3 offset = m_tiles[x, y].transform.position;
                             pawn.transform.position = new Vector3(offset.x - 0.4f + (xi * 0.2f), offset.y - 0.5f + (yi * 0.2f), 0.0f);
-                            m_tiles[x, y].m_pawns[xi, yi] = pawn.GetComponent<Pawn>();
+                            Pawn pawnComponent = pawn.GetComponent<Pawn>();
+                            pawnComponent.SetKillCallback(KillPawn);
+                            pawnComponent.SpawnPawn(ENEMY_ARMY_ID, x, y, xi, yi);
+                            m_tiles[x, y].m_pawns[xi, yi] = pawnComponent;
                         }
                     }
                 }
