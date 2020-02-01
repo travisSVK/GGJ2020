@@ -434,7 +434,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_frontlinePrefab: {fileID: 9193024163020027221, guid: 6281df1914ccfa34b9c2a478b48c960f,
     type: 3}
-  m_width: 40
+  m_width: 20
   m_height: 32
   m_tileResolution: 5
   m_pawnPrefab: {fileID: 2452158759697157184, guid: 57d6654f10ccf74418fb13c886aecfca,
@@ -15385,12 +15385,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3540637851967130358, guid: 372076643a27c03428023754d592ba28,
-        type: 3}
-      propertyPath: m_tmpForge
-      value: 
-      objectReference: {fileID: 2086020541631701554, guid: 44bc8601ff1ccaf48ba1ba7709caed8f,
-        type: 3}
     - target: {fileID: 3540637852692169201, guid: 372076643a27c03428023754d592ba28,
         type: 3}
       propertyPath: m_Name

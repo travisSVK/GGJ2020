@@ -19,11 +19,14 @@ public class BuildState : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             EnterForgeMode();
         }
-        else if (Input.GetKeyDown(KeyCode.U))
+        else if (Input.GetKeyDown(KeyCode.H))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.T))
         {
 
         }

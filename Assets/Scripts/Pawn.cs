@@ -10,6 +10,8 @@ public class Pawn : MonoBehaviour
     public int m_subTilePositionX;
     public int m_subTilePositionY;
 
+    [SerializeField] private GameObject m_child;
+
     private bool m_isInCombat = false;
     private bool m_hasWonCombat = false;
 
@@ -19,6 +21,9 @@ public class Pawn : MonoBehaviour
     private float m_swordHp;
     
     private float m_initiative;
+
+    private float m_idleProgress;
+    private float m_randomIdleSpeed;
 
     private KillCallback m_killCallback = null;
     public delegate void KillCallback(GameObject obj);
@@ -57,6 +62,11 @@ public class Pawn : MonoBehaviour
         if (pawnDied)
         {
             m_hasWonCombat = true;
+            if (armyId == GameBoard.PLAYER_ARMY_ID)
+            {
+                FindObjectOfType<AdvancementManager>().NewBreakthough(transform.position);
+            }
+            
         }
         return pawnDied;
     }
@@ -72,6 +82,10 @@ public class Pawn : MonoBehaviour
             {
                 m_isInCombat = false;
                 m_killCallback?.Invoke(gameObject);
+                if (armyId == GameBoard.PLAYER_ARMY_ID)
+                {
+                    FindObjectOfType<AdvancementManager>().NewDefeat(transform.position);
+                }
                 return true;
             }
             // TODO go repair the shield
@@ -101,16 +115,15 @@ public class Pawn : MonoBehaviour
         m_tilePositionY = tilePositionY;
         m_subTilePositionX = subTilePositionX;
         m_subTilePositionY = subTilePositionY;
-    }
 
-    private void Start()
-    {
-
+        m_idleProgress = Random.Range(0.0f, 1.0f);
+        m_randomIdleSpeed = Random.Range(10.0f, 100.0f);
     }
 
     private void Update()
     {
-
+        m_idleProgress += Time.deltaTime * m_randomIdleSpeed;
+        m_child.transform.localPosition = Vector3.up * 0.02f * Mathf.Sin(m_idleProgress);
     }
 
     private void FindBuilding()

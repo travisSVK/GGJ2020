@@ -27,6 +27,15 @@ public class ArmyManager : MonoBehaviour
         public float repairProgress;
     }
 
+    public class FrontlineOrder
+    {
+        public Vector3 startPosition;
+        public Tile frontline;
+        public Pawn pawn;
+        public float distance;
+        public float movementProgress;
+    }
+
     private List<RepairOrder> m_repairOrders;
 
     public bool AskForRepair(Pawn pawn)

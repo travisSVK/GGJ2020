@@ -7,10 +7,11 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private int m_amountToPool;
     [SerializeField] private GameObject m_objectToPool;
 
-    private List<GameObject> m_inactiveObjects = new List<GameObject>();
+    private List<GameObject> m_inactiveObjects = null;
 
     public void Initialize(int amountToPool, string name, GameObject prefab)
     {
+        m_inactiveObjects = new List<GameObject>();
         m_amountToPool = amountToPool;
         m_objectToPool = prefab;
 

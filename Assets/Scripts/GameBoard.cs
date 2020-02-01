@@ -163,7 +163,7 @@ public class GameBoard : MonoBehaviour
                 {
                     for (int xi = 0; xi < 5; ++xi, ++c)
                     {
-                        if (c > 1000)
+                        if (c > 500)
                         {
                             return;
                         }
@@ -195,7 +195,7 @@ public class GameBoard : MonoBehaviour
                 {
                     for (int xi = 0; xi < 5; ++xi, ++c)
                     {
-                        if (c > 1000)
+                        if (c > 500)
                         {
                             return;
                         }
