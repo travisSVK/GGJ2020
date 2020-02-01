@@ -90,6 +90,10 @@ MonoBehaviour:
     type: 3}
   m_defeatPrefab: {fileID: 7748161916506680722, guid: 4c158d332b08edb49b1fe630f058eac8,
     type: 3}
+  m_brokenSwordPrefab: {fileID: 3870212650939223777, guid: c3cc3b7bfbc542d4e9569351f02630ac,
+    type: 3}
+  m_brokenShieldPrefab: {fileID: 5938587384200351709, guid: 94d43388163faf449b2b068df8eea40c,
+    type: 3}
 --- !u!1 &4368785979876333195
 GameObject:
   m_ObjectHideFlags: 0

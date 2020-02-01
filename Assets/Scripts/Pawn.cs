@@ -21,7 +21,7 @@ public class Pawn : MonoBehaviour
     private float m_swordHp;
     private bool m_isMovingToFreePlace = false;
     private ArmyManager m_armyManager = null;
-    
+
     private float m_initiative;
 
     private float m_idleProgress;
@@ -36,7 +36,7 @@ public class Pawn : MonoBehaviour
     private AssignToTileCallback m_assignToTileCallback = null;
     public delegate void AssignToTileCallback(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY);
 
-    public enum AttackOutcome { None, Death, Repair};
+    public enum AttackOutcome { None, Death, Repair };
 
 
     public void SetAssignToTileCallback(AssignToTileCallback callback)
@@ -88,6 +88,11 @@ public class Pawn : MonoBehaviour
             m_swordHp -= m_dmg;
             if (m_swordHp <= 0.0f)
             {
+                if (armyId == GameBoard.PLAYER_ARMY_ID)
+                {
+                    FindObjectOfType<AdvancementManager>().NewBrokenSword(transform.position);
+                }
+
                 m_swordHp = 0.0f;
                 bool isForgeAvailable = m_armyManager.AskForRepair(this);
                 if (isForgeAvailable)
@@ -105,12 +110,7 @@ public class Pawn : MonoBehaviour
                     return true;
                 }
             }
-            
-            if (armyId == GameBoard.PLAYER_ARMY_ID && outcome == AttackOutcome.Death)
-            {
-                FindObjectOfType<AdvancementManager>().NewBreakthough(transform.position);
-            }
-            
+
             if (outcome == AttackOutcome.Death || outcome == AttackOutcome.Repair)
             {
                 m_hasWonCombat = true;
@@ -140,8 +140,18 @@ public class Pawn : MonoBehaviour
                 {
                     FindObjectOfType<AdvancementManager>().NewDefeat(transform.position);
                 }
+                else
+                {
+                    FindObjectOfType<AdvancementManager>().NewBreakthough(transform.position);
+                }
                 return AttackOutcome.Death;
             }
+
+            if (armyId == GameBoard.PLAYER_ARMY_ID)
+            {
+                FindObjectOfType<AdvancementManager>().NewBrokenShield(transform.position);
+            }
+
             bool isForgeAvailable = m_armyManager.AskForRepair(this);
             if (isForgeAvailable)
             {
