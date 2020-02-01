@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    public Tile up = null;
+    public Tile down = null;
+    public Tile left = null;
+    public Tile right = null;
+
     public int armyOwnerId = 0;
 
     private Pawn[, ] m_pawns;
+
 
     public List<Pawn> GetEnemyPawns(int id)
     {
