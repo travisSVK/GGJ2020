@@ -12,7 +12,65 @@ public class Tile : MonoBehaviour
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-    public Pawn[, ] m_pawns;
+    public Pawn[,] m_pawns;
+
+    public int numberOfPawns = 0;
+    public float weight = 0.0f;
+
+
+    public void RecalculateNumberOfPawn()
+    {
+        int i = 0;
+        for (int x = 0; x < 5; ++x)
+        {
+            for (int y = 0; y < 5; ++y)
+            {
+                if (m_pawns[x, y] != null)
+                {
+                    ++i;
+                }
+            }
+        }
+
+        numberOfPawns = i;
+    }
+
+    public bool ReserveFirstAvailableTile(Pawn pawn, out Vector3 position)
+    {
+        if (numberOfPawns == 5 * 5)
+        {
+            position = Vector3.zero;
+            return false;
+        }
+
+        for (int x = 0; x < 5; ++x)
+        {
+            for (int y = 0; y < 5; ++y)
+            {
+                if (m_pawns[x, y] == null)
+                {
+                    m_pawns[x, y] = pawn;
+                    position = new Vector3(transform.position.x - 0.5f + (x * 0.2f), transform.position.y - 0.5f + (y * 0.2f), 0.0f);
+                    return true;
+                }
+            }
+        }
+
+        position = Vector3.zero;
+        return false;
+    }
+
+    public void RecalculateWeight()
+    {
+        if ((up != null && up.armyOwnerId == armyOwnerId)
+            || (down != null && down.armyOwnerId == armyOwnerId))
+        {
+            weight = 0.0f;
+        }
+
+        weight = (float)numberOfPawns / (5.0f * 5.0f);
+    }
+
 
     float GetDistanceToEnemy(Pawn pawn, Vector3 pawnDirection, Pawn enemyPawn)
     {
@@ -333,6 +391,9 @@ public class Tile : MonoBehaviour
                 }
             }
         }
+
+        RecalculateNumberOfPawn();
+        RecalculateWeight();
     }
 
     private void Awake()
