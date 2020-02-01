@@ -14,6 +14,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private static int m_tileResolution = 5;
 
     [SerializeField] private GameObject m_pawnPrefab = null;
+    [SerializeField] private GameObject m_tilePrefab = null;
 
     private ObjectPool m_playerPool = null;
     private ObjectPool m_enemyPool = null;
@@ -79,10 +80,11 @@ public class GameBoard : MonoBehaviour
         {
             for (int x = 0; x < m_width; ++x)
             {
-                GameObject obj = new GameObject();
+                GameObject obj = Instantiate(m_tilePrefab);
                 obj.transform.parent = transform;
                 obj.transform.position = new Vector3(x - halfWidth, y - halfHeight, 0.0f);
-                Tile tile = obj.AddComponent<Tile>();
+
+                Tile tile = obj.GetComponent<Tile>();
 
                 if (y > (int)halfHeight)
                 {

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private ObjectPool m_combatPool;
+    [SerializeField] private GameObject m_combatPrefab = null;
     [SerializeField] private float m_speed = 0.2f;
+    private ObjectPool m_combatPool = null;
 
     public int armyOwnerId = 0;
     public Tile up = null;
@@ -183,5 +184,8 @@ public class Tile : MonoBehaviour
     private void Awake()
     {
         m_pawns = new Pawn[5, 5];
+        GameObject pawnPoolObj = new GameObject("CombatPool");
+        m_combatPool = pawnPoolObj.AddComponent<ObjectPool>();
+        m_combatPool.Initialize(10000, "CombatInstance", m_combatPrefab);
     }
 }
