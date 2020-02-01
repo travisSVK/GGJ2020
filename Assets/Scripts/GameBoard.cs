@@ -14,6 +14,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private int m_tileResolution = 5;
 
     [SerializeField] private GameObject m_pawnPrefab = null;
+    [SerializeField] private GameObject m_enemyPawnPrefab = null;
     [SerializeField] private GameObject m_combatPrefab = null;
 
     private ObjectPool m_playerPool = null;
@@ -116,7 +117,7 @@ public class GameBoard : MonoBehaviour
 
         GameObject enemyPoolObj = new GameObject("EnemyPool");
         m_enemyPool = enemyPoolObj.AddComponent<ObjectPool>();
-        m_enemyPool.Initialize(10000, "EnemyUnit", m_pawnPrefab);
+        m_enemyPool.Initialize(10000, "EnemyUnit", m_enemyPawnPrefab);
 
         GameObject combatPoolObj = new GameObject("CombatPool");
         m_combatPool = combatPoolObj.AddComponent<ObjectPool>();

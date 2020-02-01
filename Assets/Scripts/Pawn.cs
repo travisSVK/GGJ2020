@@ -148,10 +148,10 @@ public class Pawn : MonoBehaviour
                 return AttackOutcome.Death;
             }
 
-            //if (armyId == GameBoard.PLAYER_ARMY_ID)
-            //{
-            //    FindObjectOfType<AdvancementManager>().NewBrokenShield(transform.position);
-            //}
+            if (armyId == GameBoard.PLAYER_ARMY_ID)
+            {
+                FindObjectOfType<AdvancementManager>().NewBrokenShield(transform.position);
+            }
 
             //bool isForgeAvailable = m_armyManager.AskForRepair(this);
             //if (isForgeAvailable)

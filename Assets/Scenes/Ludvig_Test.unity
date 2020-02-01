@@ -439,6 +439,8 @@ MonoBehaviour:
   m_tileResolution: 5
   m_pawnPrefab: {fileID: 2452158759697157184, guid: 57d6654f10ccf74418fb13c886aecfca,
     type: 3}
+  m_enemyPawnPrefab: {fileID: 9034456587949068453, guid: b60569bfbfc8d4b4fae2d2d87e09ae83,
+    type: 3}
   m_combatPrefab: {fileID: 1375130562499915862, guid: d077eeee9ea057f4bacd9f47cf657086,
     type: 3}
 --- !u!4 &1380213083
