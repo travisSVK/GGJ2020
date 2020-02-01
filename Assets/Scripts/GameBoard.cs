@@ -22,7 +22,26 @@ public class GameBoard : MonoBehaviour
 
     private Tile[,] m_tiles = null;
     private List<FrontlineObject> m_frontlines;
-    
+
+    public int tileResolution
+    {
+        get { return m_tileResolution; }
+    }
+
+    public Tile[,] tiles
+    {
+        get { return m_tiles; }
+    }
+
+    public int width
+    {
+        get { return m_width; }
+    }
+
+    public int height
+    {
+        get { return m_height; }
+    }
 
     public void GenereateFrontline()
     {
@@ -68,6 +87,11 @@ public class GameBoard : MonoBehaviour
     public void RemovePawnFromTile(Pawn pawn)
     {
         m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionX] = null;
+    }
+
+    public void AssignPawnToTile(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
+    {
+        m_tiles[tilePositionX, tilePositionY].m_pawns[subTilePositionX, subTilePositionX] = pawn;
     }
 
     public void KillPawn(GameObject go)
@@ -175,6 +199,8 @@ public class GameBoard : MonoBehaviour
                             pawn.transform.position = new Vector3(offset.x - 0.4f + (xi * 0.2f), offset.y - 0.5f + (yi * 0.2f), 0.0f);
                             Pawn pawnComponent = pawn.GetComponent<Pawn>();
                             pawnComponent.SetKillCallback(KillPawn);
+                            pawnComponent.SetRemoveFromTileCallback(RemovePawnFromTile);
+                            pawnComponent.SetAssignToTileCallback(AssignPawnToTile);
                             pawnComponent.SpawnPawn(PLAYER_ARMY_ID, x, y, xi, yi);
                             m_tiles[x, y].m_pawns[xi, yi] = pawnComponent;
                         }
@@ -207,6 +233,8 @@ public class GameBoard : MonoBehaviour
                             pawn.transform.position = new Vector3(offset.x - 0.4f + (xi * 0.2f), offset.y - 0.5f + (yi * 0.2f), 0.0f);
                             Pawn pawnComponent = pawn.GetComponent<Pawn>();
                             pawnComponent.SetKillCallback(KillPawn);
+                            pawnComponent.SetRemoveFromTileCallback(RemovePawnFromTile);
+                            pawnComponent.SetAssignToTileCallback(AssignPawnToTile);
                             pawnComponent.SpawnPawn(ENEMY_ARMY_ID, x, y, xi, yi);
                             m_tiles[x, y].m_pawns[xi, yi] = pawnComponent;
                         }

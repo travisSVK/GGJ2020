@@ -125,6 +125,106 @@ public class Tile : MonoBehaviour
         return tile;
     }
 
+    private bool IsNextCellReserved(Vector3 direction, Pawn pawn)
+    {
+        if (direction.y != 0.0f)
+        {
+            int positionY = pawn.m_subTilePositionY;
+            // check upper cell
+            if (direction.y > 0.0f)
+            {
+                positionY += 1;
+            }
+            else
+            {
+                positionY -= 1;
+            }
+
+            int tilePositionY = pawn.m_tilePositionY;
+            if (positionY >= m_gameBoard.tileResolution)
+            {
+                if (tilePositionY >= m_gameBoard.height)
+                {
+                    return true;
+                }
+                if (!m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, positionY - (m_gameBoard.tileResolution - 1)])
+                {
+                    m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, positionY - (m_gameBoard.tileResolution - 1)] = pawn;
+                    return false;
+                }
+                return true;
+            }
+
+            if (positionY < 0)
+            {
+                if (tilePositionY < 0)
+                {
+                    return true;
+                }
+                if (!m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution - positionY])
+                {
+                    m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution - positionY] = pawn;
+                    return false;
+                }
+                return true;
+            }
+
+            if (!m_pawns[pawn.m_subTilePositionX, positionY])
+            {
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            int positionX = pawn.m_subTilePositionX;
+            // check upper cell
+            if (direction.x > 0.0f)
+            {
+                positionX += 1;
+            }
+            else
+            {
+                positionX -= 1;
+            }
+
+            int tilePositionX = pawn.m_tilePositionX;
+            if (positionX >= m_gameBoard.tileResolution)
+            {
+                if (tilePositionX >= m_gameBoard.width)
+                {
+                    return true;
+                }
+                if (!m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionX].m_pawns[positionX - (m_gameBoard.tileResolution - 1), pawn.m_subTilePositionY])
+                {
+                    m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionX].m_pawns[positionX - (m_gameBoard.tileResolution - 1), pawn.m_subTilePositionY] = pawn;
+                    return false;
+                }
+                return true;
+            }
+
+            if (positionX < 0)
+            {
+                if (tilePositionX < 0)
+                {
+                    return true;
+                }
+                if (!m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution - positionX, pawn.m_subTilePositionY])
+                {
+                    m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution - positionX, pawn.m_subTilePositionY] = pawn;
+                    return false;
+                }
+                return true;
+            }
+
+            if (!m_pawns[positionX, pawn.m_subTilePositionY])
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
     private void Update()
     {
         if (!m_gameBoard)
@@ -159,6 +259,7 @@ public class Tile : MonoBehaviour
                         if (inFrontOfPawn.armyId == pawn.armyId)
                         {
                             // nothing to do
+                            pawn.isMovingToFreePlace = false;
                             continue;
                         }
                         float distanceToEnemy = GetDistanceToEnemy(pawn, direction, inFrontOfPawn);
@@ -168,12 +269,14 @@ public class Tile : MonoBehaviour
                             GameObject gameObject = m_gameBoard.GetCombat();
                             CombatInstance combatInstance = gameObject.GetComponent(typeof(CombatInstance)) as CombatInstance;
                             combatInstance.SetCombat(pawn, inFrontOfPawn);
+                            pawn.isMovingToFreePlace = false;
                             continue;
                         }
                     }
-                    // if not any enemy, advance forward, but only if the combat was won recently
-                    if (!gameObject && pawn.hasWonCombat)
+                    // check if theres not reserved cell (ie, the enemy is not approaching there)
+                    if (pawn.isMovingToFreePlace || !IsNextCellReserved(direction, pawn))
                     {
+                        pawn.isMovingToFreePlace = true;
                         pawn.transform.position += direction * unitDistance * m_speed;
                     }
                 }
