@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
 
     public int armyOwnerId = 0;
 
-    private Pawn[, ] m_pawns;
+    public Pawn[, ] m_pawns;
 
 
     public List<Pawn> GetEnemyPawns(int id)

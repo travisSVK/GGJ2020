@@ -10,7 +10,7 @@ public class ArmyManager : MonoBehaviour
     [SerializeField] private ObjectPool m_pawnObjecPool;
     [SerializeField] private ObjectPool m_frontLineObjectPool;
     
-    private List<Frontline> m_frontlines = new List<Frontline>();
+    private List<FrontlineObject> m_frontlines = new List<FrontlineObject>();
     
     private void Start()
     {
@@ -19,7 +19,7 @@ public class ArmyManager : MonoBehaviour
     
     private void Update()
     {
-        foreach (Frontline frontline in m_frontlines)
+        foreach (FrontlineObject frontline in m_frontlines)
         {
             frontline.Attack();
         }
@@ -27,6 +27,7 @@ public class ArmyManager : MonoBehaviour
 
     private void PopulateArmy()
     {
+        /*
         List<GameObject> pawns = m_pawnObjecPool.GetPooledObjects(m_armySize);
         int frontLineIndex = 0;
         int frontLineSize = m_armySize / m_frontLinePositions.Length;
@@ -36,7 +37,7 @@ public class ArmyManager : MonoBehaviour
             GameObject obj = m_frontLineObjectPool.GetPooledObject();
             if (obj)
             {
-                Frontline frontline = obj.GetComponent<Frontline>();
+                FrontlineObject frontline = obj.GetComponent<FrontlineObject>();
                 for (int i = frontLineIndex; i < frontLineIndex + frontLineSize; i++)
                 {
                     if ((i <= pawns.Count) && (pawns[i]))
@@ -52,6 +53,7 @@ public class ArmyManager : MonoBehaviour
                 m_frontlines.Add(frontline);
             }
         }
+        */
 
     }
 }

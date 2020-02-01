@@ -6,48 +6,40 @@ public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private int m_amountToPool;
     [SerializeField] private GameObject m_objectToPool;
-    
-    private List<GameObject> m_pooledObjects = new List<GameObject>();
 
-    private void Awake()
+    private List<GameObject> m_inactiveObjects = new List<GameObject>();
+
+    public void Initialize(int amountToPool, string name, GameObject prefab)
     {
+        m_amountToPool = amountToPool;
+        m_objectToPool = prefab;
+
         for (int i = 0; i < m_amountToPool; i++)
         {
-            GameObject obj = (GameObject)Instantiate(m_objectToPool);
+            GameObject obj = Instantiate(m_objectToPool);
+            obj.name = name + "_" + i;
+            obj.transform.parent = transform;
             obj.SetActive(false);
-            m_pooledObjects.Add(obj);
+            m_inactiveObjects.Add(obj);
         }
+    }
+
+    public void Kill(GameObject obj)
+    {
+        obj.SetActive(false);
+        m_inactiveObjects.Add(obj);
     }
 
     public GameObject GetPooledObject()
     {
-        for (int i = 0; i < m_pooledObjects.Count; i++)
+        if (m_inactiveObjects.Count == 0)
         {
-            if (!m_pooledObjects[i].activeInHierarchy)
-            {
-                m_pooledObjects[i].SetActive(true);
-                return m_pooledObjects[i];
-            }
+            return null;
         }
-        return null;
-    }
 
-
-    public List<GameObject> GetPooledObjects(int count)
-    {
-        List<GameObject> objects = new List<GameObject>(); 
-        for (int i = 0; i < m_pooledObjects.Count; i++)
-        {
-            if (!m_pooledObjects[i].activeInHierarchy)
-            {
-                m_pooledObjects[i].SetActive(true);
-                objects.Add(m_pooledObjects[i]);
-                if (count == objects.Count)
-                {
-                    break;
-                }
-            }
-        }
-        return objects;
+        GameObject obj = m_inactiveObjects[m_inactiveObjects.Count - 1];
+        m_inactiveObjects.RemoveAt(m_inactiveObjects.Count - 1);
+        obj.SetActive(true);
+        return obj;
     }
 }

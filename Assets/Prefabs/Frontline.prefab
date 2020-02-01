@@ -172,7 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3960138519652151984}
   - component: {fileID: 3996455224258911858}
-  - component: {fileID: 2843459213189522347}
+  - component: {fileID: 9193024163020027221}
   m_Layer: 0
   m_Name: Frontline
   m_TagString: Untagged
@@ -222,7 +222,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.5}
   m_EdgeRadius: 0
---- !u!114 &2843459213189522347
+--- !u!114 &9193024163020027221
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,3 +236,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_inactive: {fileID: 6364194323505820406}
   m_active: {fileID: 3639239311660936733}
+  speed: 0.2

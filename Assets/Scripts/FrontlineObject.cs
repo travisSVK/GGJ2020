@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Frontline : MonoBehaviour, ISelectable
+public class FrontlineObject : MonoBehaviour, ISelectable
 {
     [SerializeField] private SpriteRenderer m_inactive = null;
     [SerializeField] private SpriteRenderer m_active = null;
@@ -19,6 +19,7 @@ public class Frontline : MonoBehaviour, ISelectable
 
     public void Attack()
     {
+        /*
         Vector3 direction = (m_enemyTile.position - m_baseTile.position).normalized;
         float unitDistance = Grid.GetUnitDistance();
         List<Pawn> enemyPawns = Grid.GetEnemyPawns(m_enemyTile.position, m_armyId);
@@ -57,6 +58,7 @@ public class Frontline : MonoBehaviour, ISelectable
                 }
             }
         }
+        */
     }
 
     public void OnBeginHover()
