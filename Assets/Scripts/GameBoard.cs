@@ -91,13 +91,20 @@ public class GameBoard : MonoBehaviour
 
     public void AssignPawnToTile(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
     {
-        m_tiles[tilePositionX, tilePositionY].m_pawns[subTilePositionX, subTilePositionX] = pawn;
+        m_tiles[tilePositionX, tilePositionY].m_pawns[subTilePositionX, subTilePositionY] = pawn;
+    }
+
+    public void KillEnemyPawn(GameObject go)
+    {
+        Pawn pawn = go.GetComponent<Pawn>();
+        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
+        m_playerPool.Kill(go);
     }
 
     public void KillPawn(GameObject go)
     {
         Pawn pawn = go.GetComponent<Pawn>();
-        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionX] = null;
+        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
         m_playerPool.Kill(go);
     }
 
@@ -232,7 +239,7 @@ public class GameBoard : MonoBehaviour
                             Vector3 offset = m_tiles[x, y].transform.position;
                             pawn.transform.position = new Vector3(offset.x - 0.4f + (xi * 0.2f), offset.y - 0.5f + (yi * 0.2f), 0.0f);
                             Pawn pawnComponent = pawn.GetComponent<Pawn>();
-                            pawnComponent.SetKillCallback(KillPawn);
+                            pawnComponent.SetKillCallback(KillEnemyPawn);
                             pawnComponent.SetRemoveFromTileCallback(RemovePawnFromTile);
                             pawnComponent.SetAssignToTileCallback(AssignPawnToTile);
                             pawnComponent.SpawnPawn(ENEMY_ARMY_ID, x, y, xi, yi);

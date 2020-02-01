@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     
-    [SerializeField] private float m_speed = 0.2f;
+    [SerializeField] private float m_speed = 0.05f;
     private GameBoard m_gameBoard;
 
     public int armyOwnerId = 0;
@@ -161,9 +161,9 @@ public class Tile : MonoBehaviour
                 {
                     return true;
                 }
-                if (!m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution - positionY])
+                if (!m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution + positionY])
                 {
-                    m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution - positionY] = pawn;
+                    m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution + positionY] = pawn;
                     return false;
                 }
                 return true;
@@ -209,9 +209,9 @@ public class Tile : MonoBehaviour
                 {
                     return true;
                 }
-                if (!m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution - positionX, pawn.m_subTilePositionY])
+                if (!m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution + positionX, pawn.m_subTilePositionY])
                 {
-                    m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution - positionX, pawn.m_subTilePositionY] = pawn;
+                    m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution + positionX, pawn.m_subTilePositionY] = pawn;
                     return false;
                 }
                 return true;
@@ -273,6 +273,10 @@ public class Tile : MonoBehaviour
                             continue;
                         }
                     }
+                    if (pawn.gameObject.name == "PlayerUnit_9007")
+                    {
+                        int i = 1;
+                    }
                     // check if theres not reserved cell (ie, the enemy is not approaching there)
                     if (pawn.isMovingToFreePlace || !IsNextCellReserved(direction, pawn))
                     {
@@ -290,7 +294,10 @@ public class Tile : MonoBehaviour
                         {
                             // try to get from the next tile in that direction
                             Tile tile = GetTileInDirection(direction);
-                            inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
+                            if (tile)
+                            {
+                                inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
+                            }
                         }
                         if (inFrontOfPawn)
                         {

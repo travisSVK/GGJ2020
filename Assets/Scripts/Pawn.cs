@@ -94,9 +94,9 @@ public class Pawn : MonoBehaviour
                 }
 
                 m_swordHp = 0.0f;
-                bool isForgeAvailable = m_armyManager.AskForRepair(this);
-                if (isForgeAvailable)
-                {
+                //bool isForgeAvailable = m_armyManager.AskForRepair(this);
+                //if (isForgeAvailable)
+                //{
                     m_isInCombat = false;
                     if (outcome == AttackOutcome.None)
                     {
@@ -107,8 +107,9 @@ public class Pawn : MonoBehaviour
                     {
                         m_tileRemoveCallback(this);
                     }
+                    m_killCallback?.Invoke(gameObject);
                     return true;
-                }
+                //}
             }
 
             if (outcome == AttackOutcome.Death || outcome == AttackOutcome.Repair)
@@ -147,18 +148,28 @@ public class Pawn : MonoBehaviour
                 return AttackOutcome.Death;
             }
 
-            if (armyId == GameBoard.PLAYER_ARMY_ID)
-            {
-                FindObjectOfType<AdvancementManager>().NewBrokenShield(transform.position);
-            }
+            //if (armyId == GameBoard.PLAYER_ARMY_ID)
+            //{
+            //    FindObjectOfType<AdvancementManager>().NewBrokenShield(transform.position);
+            //}
 
-            bool isForgeAvailable = m_armyManager.AskForRepair(this);
-            if (isForgeAvailable)
-            {
-                m_isInCombat = false;
-                m_tileRemoveCallback(this);
-                return AttackOutcome.Repair;
-            }
+            //bool isForgeAvailable = m_armyManager.AskForRepair(this);
+            //if (isForgeAvailable)
+            //{
+            //    m_isInCombat = false;
+            //    m_tileRemoveCallback(this);
+            //    return AttackOutcome.Repair;
+            //}
+
+            m_isInCombat = false;
+            return AttackOutcome.Death;
+            //bool isForgeAvailable = m_armyManager.AskForRepair(this);
+            //if (isForgeAvailable)
+            //{
+            //    m_isInCombat = false;
+            //    m_tileRemoveCallback(this);
+            //    return AttackOutcome.Repair;
+            //}
         }
         return AttackOutcome.None;
     }
