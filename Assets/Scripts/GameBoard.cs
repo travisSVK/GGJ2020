@@ -77,17 +77,17 @@ public class GameBoard : MonoBehaviour
         return 1.0f / m_tileResolution;
     }
 
-    public GameObject GetCombat()
+    public CombatInstance GetCombat()
     {
         GameObject combat = m_combatPool.GetPooledObject();
         CombatInstance ci = combat.GetComponent(typeof(CombatInstance)) as CombatInstance;
         ci.SetKillCallback(m_combatPool.Kill);
-        return combat;
+        return ci;
     }
 
     public void RemovePawnFromTile(Pawn pawn)
     {
-        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionX] = null;
+        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
     }
 
     public void AssignPawnToTile(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)

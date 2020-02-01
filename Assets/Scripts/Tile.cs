@@ -266,17 +266,13 @@ public class Tile : MonoBehaviour
                         if (unitDistance >= distanceToEnemy)
                         {
                             // create combat instance
-                            GameObject gameObject = m_gameBoard.GetCombat();
-                            CombatInstance combatInstance = gameObject.GetComponent(typeof(CombatInstance)) as CombatInstance;
+                            CombatInstance combatInstance = m_gameBoard.GetCombat();
                             combatInstance.SetCombat(pawn, inFrontOfPawn);
                             pawn.isMovingToFreePlace = false;
                             continue;
                         }
                     }
-                    if (pawn.gameObject.name == "PlayerUnit_9007")
-                    {
-                        int i = 1;
-                    }
+                    
                     // check if theres not reserved cell (ie, the enemy is not approaching there)
                     if (pawn.isMovingToFreePlace || !IsNextCellReserved(direction, pawn))
                     {
