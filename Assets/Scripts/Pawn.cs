@@ -17,15 +17,36 @@ public class Pawn : MonoBehaviour
     private float m_dmg;
     private float m_shieldHp;
     private float m_swordHp;
+    private bool m_isMovingToFreePlace = false;
+    private ArmyManager m_armyManager = null;
     
     private float m_initiative;
 
     private KillCallback m_killCallback = null;
     public delegate void KillCallback(GameObject obj);
 
+    private RemoveFromTileCallback m_tileRemoveCallback = null;
+    public delegate void RemoveFromTileCallback(Pawn pawn);
+
+    private AssignToTileCallback m_assignToTileCallback = null;
+    public delegate void AssignToTileCallback(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY);
+
+    public enum AttackOutcome { None, Death, Repair};
+
+
+    public void SetAssignToTileCallback(AssignToTileCallback callback)
+    {
+        m_assignToTileCallback = callback;
+    }
+
     public void SetKillCallback(KillCallback callback)
     {
         m_killCallback = callback;
+    }
+
+    public void SetRemoveFromTileCallback(RemoveFromTileCallback callback)
+    {
+        m_tileRemoveCallback = callback;
     }
 
     public float initiative
@@ -45,23 +66,53 @@ public class Pawn : MonoBehaviour
         set { m_hasWonCombat = value; }
     }
 
+    public bool isMovingToFreePlace
+    {
+        get { return m_isMovingToFreePlace; }
+        set { m_isMovingToFreePlace = value; }
+    }
+
     public bool Attack(Pawn pawn)
     {
-        bool pawnDied = pawn.TakeDmg(m_dmg);
-        m_swordHp -= m_dmg;
-        if (m_swordHp <= 0.0f)
+        bool pawnDied = false;
+        if (m_swordHp > 0.0f)
         {
-            m_swordHp = 0.0f;
-            // TODO go repair the sword
-        }
-        if (pawnDied)
-        {
-            m_hasWonCombat = true;
+            AttackOutcome outcome = pawn.TakeDmg(m_dmg);
+            m_swordHp -= m_dmg;
+            if (m_swordHp <= 0.0f)
+            {
+                m_swordHp = 0.0f;
+                bool isForgeAvailable = m_armyManager.AskForRepair(this);
+                if (isForgeAvailable)
+                {
+                    m_isInCombat = false;
+                    if (outcome == AttackOutcome.None)
+                    {
+                        m_assignToTileCallback(pawn, m_tilePositionX, m_tilePositionY, m_subTilePositionX, m_subTilePositionY);
+                        pawn.m_hasWonCombat = true;
+                    }
+                    else
+                    {
+                        m_tileRemoveCallback(this);
+                    }
+                    return true;
+                }
+            }
+            if (outcome == AttackOutcome.Death || outcome == AttackOutcome.Repair)
+            {
+                m_hasWonCombat = true;
+                m_assignToTileCallback(this, pawn.m_tilePositionX, pawn.m_tilePositionY, pawn.m_subTilePositionX, pawn.m_subTilePositionY);
+                if (outcome == AttackOutcome.Death)
+                {
+                    m_killCallback?.Invoke(pawn.gameObject);
+                }
+                pawnDied = true;
+            }
         }
         return pawnDied;
     }
 
-    public bool TakeDmg(float dmg)
+    public AttackOutcome TakeDmg(float dmg)
     {
         m_shieldHp -= dmg;
         if (m_shieldHp < 0.0f)
@@ -71,21 +122,17 @@ public class Pawn : MonoBehaviour
             if (m_hp <= 0.0f)
             {
                 m_isInCombat = false;
-                m_killCallback?.Invoke(gameObject);
-                return true;
+                return AttackOutcome.Death;
             }
-            // TODO go repair the shield
-            ArmyManager armyManager = FindObjectOfType<ArmyManager>();
-            if (armyManager)
+            bool isForgeAvailable = m_armyManager.AskForRepair(this);
+            if (isForgeAvailable)
             {
-                bool isForgeAvailable = armyManager.AskForRepair(this);
-                if (isForgeAvailable)
-                {
-                    return true;
-                }
+                m_isInCombat = false;
+                m_tileRemoveCallback(this);
+                return AttackOutcome.Repair;
             }
         }
-        return false;
+        return AttackOutcome.None;
     }
 
     public void SpawnPawn(int armyIdSet, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
@@ -105,7 +152,7 @@ public class Pawn : MonoBehaviour
 
     private void Start()
     {
-
+        m_armyManager = FindObjectOfType<ArmyManager>();
     }
 
     private void Update()
