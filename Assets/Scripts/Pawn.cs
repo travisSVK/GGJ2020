@@ -82,8 +82,6 @@ public class Pawn : MonoBehaviour
         bool pawnDied = false;
         if (m_swordHp > 0.0f)
         {
-            m_hasWonCombat = true;
-
             AttackOutcome outcome = pawn.TakeDmg(m_dmg);
             m_swordHp -= m_dmg;
             if (m_swordHp <= 0.0f)
@@ -95,20 +93,21 @@ public class Pawn : MonoBehaviour
 
                 m_swordHp = 0.0f;
                 bool isForgeAvailable = m_armyManager.AskForRepair(this);
-                if (isForgeAvailable && armyId == GameBoard.PLAYER_ARMY_ID)
+                if (isForgeAvailable)
                 {
-                    m_isInCombat = false;
-                    if (outcome == AttackOutcome.None)
-                    {
-                        m_assignToTileCallback(pawn, m_tilePositionX, m_tilePositionY, m_subTilePositionX, m_subTilePositionY);
-                        pawn.m_hasWonCombat = true;
-                    }
-                    else
-                    {
-                        m_tileRemoveCallback(this);
-                    }
-                    m_killCallback?.Invoke(gameObject);
-                    return true;
+                m_isInCombat = false;
+                if (outcome == AttackOutcome.None)
+                {
+                    m_assignToTileCallback(pawn, m_tilePositionX, m_tilePositionY, m_subTilePositionX, m_subTilePositionY);
+                    pawn.m_hasWonCombat = true;
+                }
+                else
+                {
+                    m_tileRemoveCallback(this);
+                    m_killCallback?.Invoke(pawn.gameObject);
+                }
+                m_killCallback?.Invoke(gameObject);
+                return true;
                 }
             }
 
@@ -135,8 +134,8 @@ public class Pawn : MonoBehaviour
             m_shieldHp = 0.0f;
             if (m_hp <= 0.0f)
             {
-                m_isInCombat = false;
-                m_killCallback?.Invoke(gameObject);
+                //m_isInCombat = false;
+                //m_killCallback?.Invoke(gameObject);
                 if (armyId == GameBoard.PLAYER_ARMY_ID)
                 {
                     FindObjectOfType<AdvancementManager>().NewDefeat(transform.position);
@@ -145,7 +144,7 @@ public class Pawn : MonoBehaviour
                 {
                     FindObjectOfType<AdvancementManager>().NewBreakthough(transform.position);
                 }
-                return AttackOutcome.Death;
+                //return AttackOutcome.Death;
             }
 
             if (armyId == GameBoard.PLAYER_ARMY_ID)
@@ -154,13 +153,13 @@ public class Pawn : MonoBehaviour
             }
 
             bool isForgeAvailable = m_armyManager.AskForRepair(this);
-            if (isForgeAvailable && armyId == GameBoard.PLAYER_ARMY_ID)
+            if (isForgeAvailable)
             {
                 m_isInCombat = false;
                 m_tileRemoveCallback(this);
                 return AttackOutcome.Repair;
             }
-
+            m_tileRemoveCallback(this);
             m_isInCombat = false;
             return AttackOutcome.Death;
         }

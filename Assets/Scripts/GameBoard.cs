@@ -93,6 +93,10 @@ public class GameBoard : MonoBehaviour
     public void AssignPawnToTile(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
     {
         m_tiles[tilePositionX, tilePositionY].m_pawns[subTilePositionX, subTilePositionY] = pawn;
+        pawn.m_tilePositionX = tilePositionX;
+        pawn.m_tilePositionY = tilePositionY;
+        pawn.m_subTilePositionX = subTilePositionX;
+        pawn.m_subTilePositionY = subTilePositionY;
     }
 
     public void KillEnemyPawn(GameObject go)
