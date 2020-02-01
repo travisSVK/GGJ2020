@@ -5,13 +5,13 @@ using UnityEngine;
 public class ArmyManager : MonoBehaviour
 {
     [SerializeField] private int m_armySize;
+    [SerializeField] private int m_armyId;
     [SerializeField] private FrontlineEntry[] m_frontLinePositions;
     [SerializeField] private ObjectPool m_pawnObjecPool;
     [SerializeField] private ObjectPool m_frontLineObjectPool;
-
-    private List<Frontline> m_frontLines = new List<Frontline>();
     
-
+    private List<Frontline> m_frontlines = new List<Frontline>();
+    
     private void Start()
     {
         PopulateArmy();
@@ -19,7 +19,10 @@ public class ArmyManager : MonoBehaviour
     
     private void Update()
     {
-        
+        foreach (Frontline frontline in m_frontlines)
+        {
+            frontline.Attack();
+        }
     }
 
     private void PopulateArmy()
@@ -33,18 +36,20 @@ public class ArmyManager : MonoBehaviour
             GameObject obj = m_frontLineObjectPool.GetPooledObject();
             if (obj)
             {
-                Frontline frontLine = obj.GetComponent<Frontline>();
+                Frontline frontline = obj.GetComponent<Frontline>();
                 for (int i = frontLineIndex; i < frontLineIndex + frontLineSize; i++)
                 {
                     if ((i <= pawns.Count) && (pawns[i]))
                     {
                         Pawn pawn = pawns[i].GetComponent<Pawn>();
-                        frontLine.AddPawn(pawn);
-                        frontLine.SetTiles(frontlineEntry.m_baseTile, frontlineEntry.m_enemyTile);
+                        frontline.AddPawn(pawn);
+                        frontline.SetTiles(frontlineEntry.m_baseTile, frontlineEntry.m_enemyTile);
+                        frontline.armyId = m_armyId;
                     }
                 }
+
                 frontLineIndex += frontLineSize;
-                m_frontLines.Add(frontLine);
+                m_frontlines.Add(frontline);
             }
         }
 
