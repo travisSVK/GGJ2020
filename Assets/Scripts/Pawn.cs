@@ -13,7 +13,6 @@ public class Pawn : MonoBehaviour
     [SerializeField] private GameObject m_child;
 
     private bool m_isInCombat = false;
-    private bool m_hasWonCombat = false;
 
     private float m_hp;
     private float m_dmg;
@@ -28,7 +27,7 @@ public class Pawn : MonoBehaviour
     private float m_randomIdleSpeed;
 
     private KillCallback m_killCallback = null;
-    public delegate void KillCallback(GameObject obj);
+    public delegate void KillCallback(GameObject obj, bool eraseTilePosition = true);
 
     private RemoveFromTileCallback m_tileRemoveCallback = null;
     public delegate void RemoveFromTileCallback(Pawn pawn);
@@ -65,12 +64,6 @@ public class Pawn : MonoBehaviour
         set { m_isInCombat = value; }
     }
 
-    public bool hasWonCombat
-    {
-        get { return m_hasWonCombat; }
-        set { m_hasWonCombat = value; }
-    }
-
     public bool isMovingToFreePlace
     {
         get { return m_isMovingToFreePlace; }
@@ -99,26 +92,29 @@ public class Pawn : MonoBehaviour
                 if (outcome == AttackOutcome.None)
                 {
                     m_assignToTileCallback(pawn, m_tilePositionX, m_tilePositionY, m_subTilePositionX, m_subTilePositionY);
-                    pawn.m_hasWonCombat = true;
+                    pawn.m_isMovingToFreePlace = true;
+                    pawn.m_isInCombat = false;
+                    m_killCallback?.Invoke(gameObject, false);
                 }
                 else
                 {
-                    m_tileRemoveCallback(this);
                     m_killCallback?.Invoke(pawn.gameObject);
+                    m_killCallback?.Invoke(gameObject);
                 }
-                m_killCallback?.Invoke(gameObject);
+                
                 return true;
                 //}
             }
 
             if (outcome == AttackOutcome.Death || outcome == AttackOutcome.Repair)
             {
-                m_hasWonCombat = true;
+                m_isMovingToFreePlace = true;
                 m_assignToTileCallback(this, pawn.m_tilePositionX, pawn.m_tilePositionY, pawn.m_subTilePositionX, pawn.m_subTilePositionY);
                 if (outcome == AttackOutcome.Death)
                 {
-                    m_killCallback?.Invoke(pawn.gameObject);
+                    m_killCallback?.Invoke(pawn.gameObject, false);
                 }
+                m_isInCombat = false;
                 pawnDied = true;
             }
         }

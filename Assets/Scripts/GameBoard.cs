@@ -92,6 +92,7 @@ public class GameBoard : MonoBehaviour
 
     public void AssignPawnToTile(Pawn pawn, int tilePositionX, int tilePositionY, int subTilePositionX, int subTilePositionY)
     {
+        RemovePawnFromTile(pawn);
         m_tiles[tilePositionX, tilePositionY].m_pawns[subTilePositionX, subTilePositionY] = pawn;
         pawn.m_tilePositionX = tilePositionX;
         pawn.m_tilePositionY = tilePositionY;
@@ -99,17 +100,23 @@ public class GameBoard : MonoBehaviour
         pawn.m_subTilePositionY = subTilePositionY;
     }
 
-    public void KillEnemyPawn(GameObject go)
+    public void KillEnemyPawn(GameObject go, bool eraseTilePosition = true)
     {
         Pawn pawn = go.GetComponent<Pawn>();
-        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
+        if (eraseTilePosition)
+        {
+            m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
+        }
         m_playerPool.Kill(go);
     }
 
-    public void KillPawn(GameObject go)
+    public void KillPawn(GameObject go, bool eraseTilePosition = true)
     {
         Pawn pawn = go.GetComponent<Pawn>();
-        m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
+        if (eraseTilePosition)
+        {
+            m_tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].m_pawns[pawn.m_subTilePositionX, pawn.m_subTilePositionY] = null;
+        }
         m_playerPool.Kill(go);
     }
 

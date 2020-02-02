@@ -93,7 +93,7 @@ public class Tile : MonoBehaviour
                 }
                 distanceToPawn = Mathf.Abs(anotherPawn.transform.position.x - pawn.transform.position.x);
             }
-            if (unitDistance >= distanceToPawn)
+            if (unitDistance >= (distanceToPawn - 0.05f))
             {
                 inFrontOfPawn = anotherPawn;
                 break;
@@ -125,7 +125,8 @@ public class Tile : MonoBehaviour
         return tile;
     }
 
-    private bool IsNextCellReserved(Vector3 direction, Pawn pawn)
+    // check and !!ALSO RESERVES!! new tile
+    private bool IsNextTileReserved(Vector3 direction, Pawn pawn, ref Pawn other)
     {
         if (direction.y != 0.0f)
         {
@@ -156,6 +157,7 @@ public class Tile : MonoBehaviour
                     pawn.m_subTilePositionY = positionY - m_gameBoard.tileResolution;
                     return false;
                 }
+                other = m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, positionY - m_gameBoard.tileResolution];
                 return true;
             }
 
@@ -174,6 +176,7 @@ public class Tile : MonoBehaviour
                     pawn.m_subTilePositionY = m_gameBoard.tileResolution + positionY;
                     return false;
                 }
+                other = m_gameBoard.tiles[pawn.m_tilePositionX, tilePositionY].m_pawns[pawn.m_subTilePositionX, m_gameBoard.tileResolution + positionY];
                 return true;
             }
 
@@ -184,6 +187,7 @@ public class Tile : MonoBehaviour
                 pawn.m_subTilePositionY = positionY;
                 return false;
             }
+            other = m_pawns[pawn.m_subTilePositionX, positionY];
             return true;
         }
         else
@@ -215,6 +219,7 @@ public class Tile : MonoBehaviour
                     pawn.m_subTilePositionX = positionX - m_gameBoard.tileResolution;
                     return false;
                 }
+                other = m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[positionX - m_gameBoard.tileResolution, pawn.m_subTilePositionY];
                 return true;
             }
 
@@ -233,6 +238,7 @@ public class Tile : MonoBehaviour
                     pawn.m_subTilePositionX = m_gameBoard.tileResolution + positionX;
                     return false;
                 }
+                other = m_gameBoard.tiles[tilePositionX, pawn.m_tilePositionY].m_pawns[m_gameBoard.tileResolution + positionX, pawn.m_subTilePositionY];
                 return true;
             }
 
@@ -243,6 +249,7 @@ public class Tile : MonoBehaviour
                 pawn.m_subTilePositionX = positionX;
                 return false;
             }
+            other = m_pawns[positionX, pawn.m_subTilePositionY];
             return true;
         }
     }
@@ -265,70 +272,43 @@ public class Tile : MonoBehaviour
                 // if not in combat, check if any enemy pawn is standing infront
                 if (!pawn.isInCombat)
                 {
-                    Pawn inFrontOfPawn = GetPawnInFrontOf(pawn, direction, m_pawns);
-                    if (!inFrontOfPawn)
+                    Pawn other = null;
+                    if (pawn.isMovingToFreePlace)
                     {
-                        // try to get from the next tile in that direction
-                        Tile tile = GetTileInDirection(direction);
-                        if (tile)
+                        // we reached the place we go towards, then change to another
+                        float posX = m_gameBoard.tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].transform.position.x - 0.5f;
+                        float posY = m_gameBoard.tiles[pawn.m_tilePositionX, pawn.m_tilePositionY].transform.position.y - 0.5f;
+                        posX += unitDistance * pawn.m_subTilePositionX + 0.1f;
+                        posY += unitDistance * pawn.m_subTilePositionY;
+                        Vector3 desiredPosition = new Vector3(posX, posY, 0.0f);
+                        if ((pawn.transform.position.x >= (desiredPosition.x - 0.05f)) && (pawn.transform.position.x <= (desiredPosition.x + 0.05f)) 
+                            && (pawn.transform.position.y >= (desiredPosition.y - 0.05f)) && (pawn.transform.position.y <= (desiredPosition.y + 0.05f)))
                         {
-                            inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
-                        }
-                    }
-                    // check if its enemy or not
-                    if (inFrontOfPawn)
-                    {
-                        if (inFrontOfPawn.armyId == pawn.armyId)
-                        {
-                            // nothing to do
                             pawn.isMovingToFreePlace = false;
-                            continue;
-                        }
-                        float distanceToEnemy = GetDistanceToEnemy(pawn, direction, inFrontOfPawn);
-                        if (unitDistance >= distanceToEnemy)
-                        {
-                            // create combat instance
-                            CombatInstance combatInstance = m_gameBoard.GetCombat();
-                            combatInstance.SetCombat(pawn, inFrontOfPawn);
-                            pawn.isMovingToFreePlace = false;
-                            continue;
-                        }
-                    }
-
-                    // check if theres not reserved cell (ie, the enemy is not approaching there)
-                    if (pawn.isMovingToFreePlace || !IsNextCellReserved(direction, pawn))
-                    {
-                        pawn.isMovingToFreePlace = true;
-                        pawn.transform.position += direction * unitDistance * m_speed;
-                    }
-                    else
-                    {
-                        IsNextCellReserved(direction, pawn);
-                    }
-                }
-                else
-                {
-                    // still in combat, lets check if already won
-                    if (pawn.hasWonCombat)
-                    {
-                        Pawn inFrontOfPawn = GetPawnInFrontOf(pawn, direction, m_pawns);
-                        if (!inFrontOfPawn)
-                        {
-                            // try to get from the next tile in that direction
-                            Tile tile = GetTileInDirection(direction);
-                            if (tile)
-                            {
-                                inFrontOfPawn = GetPawnInFrontOf(pawn, direction, tile.m_pawns);
-                            }
-                        }
-                        if (inFrontOfPawn)
-                        {
-                            pawn.hasWonCombat = false;
-                            pawn.isInCombat = false;
+                            pawn.transform.position = desiredPosition;
                         }
                         else
                         {
-                            pawn.transform.position += direction * unitDistance * m_speed;
+                            Vector3 newPosition = new Vector3(direction.x * unitDistance * m_speed, direction.y * unitDistance * m_speed, direction.z * unitDistance * m_speed);
+                            pawn.transform.position += newPosition;
+                        }
+                    }
+                    else if (!IsNextTileReserved(direction, pawn, ref other))
+                    {
+                        pawn.isMovingToFreePlace = true;
+                    }
+                    else
+                    {
+                        if (other)
+                        {
+                            if (other.armyId == pawn.armyId)
+                            {
+                                // nothing to do
+                                continue;
+                            }
+                            // create combat instance
+                            CombatInstance combatInstance = m_gameBoard.GetCombat();
+                            combatInstance.SetCombat(pawn, other);
                         }
                     }
                 }

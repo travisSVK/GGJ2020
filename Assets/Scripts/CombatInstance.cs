@@ -22,8 +22,6 @@ public class CombatInstance : MonoBehaviour
         m_pawn2 = pawn2;
         m_pawn1.isInCombat = true;
         m_pawn2.isInCombat = true;
-        m_pawn1.hasWonCombat = false;
-        m_pawn2.hasWonCombat = false;
     }
 
     private void Update()
