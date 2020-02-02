@@ -15,7 +15,6 @@ public class AdvancementManager : MonoBehaviour
     [SerializeField] private GameObject m_brokenSwordPrefab;
     [SerializeField] private GameObject m_brokenShieldPrefab;
 
-
     private ObjectPool m_breakthroughs;
     private ObjectPool m_defeats;
     private ObjectPool m_brokenShields;

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    
     [SerializeField] private float m_speed = 0.05f;
     private GameBoard m_gameBoard;
 
@@ -13,7 +12,65 @@ public class Tile : MonoBehaviour
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-    public Pawn[, ] m_pawns;
+    public Pawn[,] m_pawns;
+
+    public int numberOfPawns = 0;
+    public float weight = 0.0f;
+
+
+    public void RecalculateNumberOfPawn()
+    {
+        int i = 0;
+        for (int x = 0; x < 5; ++x)
+        {
+            for (int y = 0; y < 5; ++y)
+            {
+                if (m_pawns[x, y] != null)
+                {
+                    ++i;
+                }
+            }
+        }
+
+        numberOfPawns = i;
+    }
+
+    public bool ReserveFirstAvailableTile(Pawn pawn, out Vector3 position)
+    {
+        if (numberOfPawns == 5 * 5)
+        {
+            position = Vector3.zero;
+            return false;
+        }
+
+        for (int x = 0; x < 5; ++x)
+        {
+            for (int y = 0; y < 5; ++y)
+            {
+                if (m_pawns[x, y] == null)
+                {
+                    m_pawns[x, y] = pawn;
+                    position = new Vector3(transform.position.x - 0.5f + (x * 0.2f), transform.position.y - 0.5f + (y * 0.2f), 0.0f);
+                    return true;
+                }
+            }
+        }
+
+        position = Vector3.zero;
+        return false;
+    }
+
+    public void RecalculateWeight()
+    {
+        if ((up != null && up.armyOwnerId == armyOwnerId)
+            || (down != null && down.armyOwnerId == armyOwnerId))
+        {
+            weight = 0.0f;
+        }
+
+        weight = (float)numberOfPawns / (5.0f * 5.0f);
+    }
+
 
     float GetDistanceToEnemy(Pawn pawn, Vector3 pawnDirection, Pawn enemyPawn)
     {
@@ -43,86 +100,6 @@ public class Tile : MonoBehaviour
             direction = new Vector3(0.0f, -1.0f, 0.0f);
         }
         return direction;
-    }
-
-    private Pawn GetPawnInFrontOf(Pawn pawn, Vector3 direction, Pawn[,] pawnsToCheck)
-    {
-        Pawn inFrontOfPawn = null;
-        float unitDistance = m_gameBoard.GetUnitDistance();
-
-        foreach (Pawn anotherPawn in pawnsToCheck)
-        {
-            if (!anotherPawn || (pawn == anotherPawn))
-            {
-                continue;
-            }
-            float distanceToPawn = 0.0f;
-            if (direction.y != 0)
-            {
-                if (anotherPawn.transform.position.x != pawn.transform.position.x)
-                {
-                    continue;
-                }
-                if ((anotherPawn.transform.position.y - pawn.transform.position.y) < 0.0f
-                    && (direction.y > 0.0f))
-                {
-                    continue;
-                }
-                if ((anotherPawn.transform.position.y - pawn.transform.position.y) > 0.0f
-                    && (direction.y < 0.0f))
-                {
-                    continue;
-                }
-                distanceToPawn = Mathf.Abs(anotherPawn.transform.position.y - pawn.transform.position.y);
-            }
-            else
-            {
-                if (anotherPawn.transform.position.y != pawn.transform.position.y)
-                {
-                    continue;
-                }
-                if ((anotherPawn.transform.position.x - pawn.transform.position.x) < 0.0f
-                    && (direction.x < 0.0f))
-                {
-                    continue;
-                }
-                if ((anotherPawn.transform.position.x - pawn.transform.position.x) > 0.0f
-                    && (direction.x < 0.0f))
-                {
-                    continue;
-                }
-                distanceToPawn = Mathf.Abs(anotherPawn.transform.position.x - pawn.transform.position.x);
-            }
-            if (unitDistance >= (distanceToPawn - 0.05f))
-            {
-                inFrontOfPawn = anotherPawn;
-                break;
-            }
-        }
-
-        return inFrontOfPawn;
-    }
-
-    private Tile GetTileInDirection(Vector3 direction)
-    {
-        Tile tile = null;
-        if (direction.x != 0.0f)
-        {
-            if (direction.x < 0.0f)
-            {
-                return left;
-            }
-            return right;
-        }
-        if (direction.y != 0.0f)
-        {
-            if (direction.y < 0.0f)
-            {
-                return down;
-            }
-            return up;
-        }
-        return tile;
     }
 
     // check and !!ALSO RESERVES!! new tile
@@ -314,6 +291,9 @@ public class Tile : MonoBehaviour
                 }
             }
         }
+
+        RecalculateNumberOfPawn();
+        RecalculateWeight();
     }
 
     private void Awake()

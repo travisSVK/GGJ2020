@@ -22,7 +22,16 @@ public class GameBoard : MonoBehaviour
     private ObjectPool m_combatPool = null;
 
     private Tile[,] m_tiles = null;
+    private List<Tile> m_sortedTiles;
     private List<FrontlineObject> m_frontlines;
+
+    public Tile mostWeightedTile
+    {
+        get
+        {
+            return m_sortedTiles[0];
+        }
+    }
 
     public int tileResolution
     {
@@ -122,6 +131,8 @@ public class GameBoard : MonoBehaviour
 
     private void Awake()
     {
+        m_sortedTiles = new List<Tile>();
+
         GameObject pawnPoolObj = new GameObject("PlayerPool");
         m_playerPool = pawnPoolObj.AddComponent<ObjectPool>();
         m_playerPool.Initialize(10000, "PlayerUnit", m_pawnPrefab);
@@ -160,6 +171,7 @@ public class GameBoard : MonoBehaviour
                 }
 
                 m_tiles[x, y] = tile;
+                m_sortedTiles.Add(tile);
             }
         }
 
@@ -261,5 +273,11 @@ public class GameBoard : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void Update()
+    {
+        m_sortedTiles.Sort((x, y) => x.weight.CompareTo(y.weight));
+        m_sortedTiles.Reverse();
     }
 }
